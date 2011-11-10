@@ -10,7 +10,28 @@ class CensusesController extends AppController {
 	function view() {
 		$census_id = $this->params['id'];
 		$this->Census->recursive = 2;
-		$this->data = $this->Census->findById($census_id);
+
+		$fields = array('Equipement.location_id','SUM(quantity * power * hours_per_day * days_per_month) as consumption'); 
+		$conditions = array('census_id' => $census_id);
+		$group = array('Equipement.location_id');
+		$params = compact('fields', 'conditions', 'group');
+		$subtotals = $this->Census->CensusDetail->find('all', $params);
+		
+		$total = 0;
+		$subtotcomp = array();
+		foreach($subtotals as $sub) {
+			$subtotcomp[$sub['Equipement']['location_id']] = $sub[0]['consumption'];
+			$total += $sub[0]['consumption'];
+		}
+		
+		$census = $this->Census->findById($census_id);
+		foreach($census['CensusDetail'] as $i => $details) {
+			$location_id = $details['Equipement']['location_id'];
+			$census['CensusDetail'][$i]['percent_area'] = ($details['consumption'] / $subtotcomp[$location_id]) * 100;
+			$census['CensusDetail'][$i]['percent_total'] = ($details['consumption'] / $total) * 100;
+		}
+		$this->data = $census;
+		
 		$this->set(compact('census_id'));
 	}
 	

@@ -1,4 +1,4 @@
-<div class="main">
+<div class="wide">
   <h2><?php echo __("Por Ubicacion") ?></h2>
   <div class="header">
 	<h3><?php echo __("Detalles del Censo") ?></h3>
@@ -14,9 +14,14 @@
 		<th><?php echo __("Potencia") ?></th>
 		<th><?php echo __("Horas/Dia") ?></th>
 		<th><?php echo __("Dias/Mes") ?></th>
+		<th><?php echo __("Consumo (Kwh)") ?></th>
+		<th><?php echo __("% De Consumo en el Area") ?></th>
+		<th><?php echo __("% De Consumo Total") ?></th>
 		<th class="aligncenter"><?php echo __("Acciones") ?></th>
 	</tr>
 	<?php
+	$num_format = array('places' => 2, 'before' => '', 'escape' => false, 'decimals' => ',', 'thousands' => '.');
+	$per_format = array('places' => 2, 'before' => '', 'after' => '%', 'escape' => false, 'decimals' => ',', 'thousands' => '.');
 	foreach($this->data['CensusDetail'] as $census_detail) {
 		$actions = $this->Html->link(
 			$this->Html->image("icons/fugue/card-pencil.png", array("alt" => "Edit")),
@@ -34,10 +39,13 @@
 				$census_detail['Equipement']['name'],
 				'/census_details/'.$census_detail['id']
 			),
-			$census_detail['quantity'],
-			$census_detail['power'],
-			$census_detail['hours_per_day'],
-			$census_detail['days_per_month'],
+			array($census_detail['quantity'], array('class' => 'alignright')),
+			array($census_detail['power'], array('class' => 'alignright')),
+			array($census_detail['hours_per_day'], array('class' => 'alignright')),
+			array($census_detail['days_per_month'], array('class' => 'alignright')),
+			array($this->Number->format($census_detail['consumption'], $num_format), array('class' => 'alignright')),
+			array($this->Number->format($census_detail['percent_area'], $per_format), array('class' => 'alignright')),
+			array($this->Number->format($census_detail['percent_total'], $per_format), array('class' => 'alignright')),
 			array($actions, array('class' => 'alignright')),
 		);
 		$oddTrOptions = array('class' => 'odd');
