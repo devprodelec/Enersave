@@ -153,6 +153,7 @@ td {
 }
 tr.odd { background: #FAFAFA; }
 tr.even { background: #F6F6F6; }
+tr.subtotal { background: #FDF4C6; }
 tr.footer { background: #C8E2F1; }
 td:first-child { border-left: 1px solid #CCC; }
 td:last-child { border-right: 1px solid #CCC; }
